@@ -37,7 +37,7 @@ function draw(){
 }
 function renderList(){
  list.replaceChildren();
- for(const uf of UFS){const r=results[uf],button=document.createElement('button');button.className='map-state';button.type='button';
+ for(const uf of [...UFS].sort((a,b)=>{const pa=results[a]?.error?null:numeral(results[a]?.progress);const pb=results[b]?.error?null:numeral(results[b]?.progress);if(pa===null&&pb!==null)return 1;if(pb===null&&pa!==null)return -1;if(pa!==null&&pb!==null&&pa!==pb)return pa-pb;return a.localeCompare(b,'pt-BR')})){const r=results[uf],button=document.createElement('button');button.className='map-state';button.type='button';
  const dot=document.createElement('span');dot.className='map-swatch';dot.style.background=colors[r?.winner||'none'];
  const name=document.createElement('strong');name.textContent=uf;
  const p=document.createElement('span');p.textContent=r?.error?'Indisponível':percent(r?.progress);
