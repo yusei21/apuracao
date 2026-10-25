@@ -18,14 +18,14 @@ async function refreshVariation(){
   target.replaceChildren();
   const table=document.createElement('div');table.className='variation-grid';
   let shown=0;
-  for(const candidate of now){
+  for(const candidate of now.filter(c=>['13','22'].includes(candidateNumber(c))).sort((a,b)=>candidateNumber(a)==='13'?-1:1)){
    const previous=earlier.find(x=>candidateNumber(x)===candidateNumber(candidate));
    if(!previous)continue;
    const p1=numeral(previous.pvap),p2=numeral(candidate.pvap),v1=numeral(previous.vap),v2=numeral(candidate.vap);
    if(p1===null||p2===null||v1===null||v2===null)continue;
    const delta=p2-p1,vdelta=v2-v1;
    const row=document.createElement('article');row.className='variation-item';
-   const name=document.createElement('strong');name.textContent=candidate.nm||'Candidato';
+   const name=document.createElement('strong');name.textContent=candidateNumber(candidate)==='13'?'Lula (PT)':'Flávio Bolsonaro (PL)';
    const measures=document.createElement('div');measures.className='variation-values';
    measures.textContent='1º turno: '+pct(p1)+'% · 2º turno: '+pct(p2)+'%';
    const diff=document.createElement('div');diff.className='variation-delta';
