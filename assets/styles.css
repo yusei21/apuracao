@@ -41,3 +41,6 @@ button{font-weight:600}button:focus-visible,a:focus-visible{outline:2px solid va
 .proposals{margin-top:54px;padding-top:30px;border-top:1px solid #343437;scroll-margin-top:25px}.proposals h2{margin:8px 0 9px}.proposals>p{max-width:690px;line-height:1.7}
 .proposal-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}.proposal-card{padding:24px;border:1px solid #343437;border-radius:10px;background:#19191b}.proposal-card h3{margin:12px 0 9px;font-size:19px;letter-spacing:-.02em}.proposal-card p{font-size:13px;line-height:1.65;min-height:64px}.proposal-link{display:inline-block;margin-top:20px;font-size:13px;font-weight:650}.proposal-note{font-size:12px;margin-top:14px}
 @media(max-width:680px){.proposal-cards{grid-template-columns:1fr}.sidebar{flex-wrap:wrap;gap:6px}.sidebar .nav-secondary{margin:0}.proposal-card p{min-height:0}}
+
+/* Respeitar seções e links ocultos pelo filtro de cargo */
+[hidden]{display:none!important}
