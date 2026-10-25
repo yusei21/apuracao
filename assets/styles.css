@@ -61,3 +61,10 @@ button{font-weight:600}button:focus-visible,a:focus-visible{outline:2px solid va
 .map-note{font-size:12px;margin-top:14px}
 @media(max-width:850px){.map-layout{grid-template-columns:1fr}.map-list{max-height:none;grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:540px){.map-list{grid-template-columns:repeat(2,minmax(0,1fr))}.map-graphic{padding:7px}.map-state{min-height:57px}}
+
+/* Reservas de publicidade: inativas e invisíveis até configuração explícita. */
+.ad-placement[hidden]{display:none!important}
+.ad-placement{clear:both;position:relative;contain:layout style;max-width:100%;margin:28px 0;border:1px solid var(--outline,#343437);border-radius:8px;padding:10px;background:#19191b;overflow:hidden}
+.ad-label{display:block;color:#a7a7a7;font-size:11px;margin-bottom:6px}
+.ad-content{width:100%;max-width:100%;min-height:90px;overflow:hidden}
+@media(max-width:600px){.ad-placement{margin:20px 0;padding:8px}}
