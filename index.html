@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apuração presidencial • Brasil 2026</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#f5f7ff;background:#0b1220;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0}main{max-width:1040px;margin:auto;padding:32px 20px 80px}
+header{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}h1{font-size:clamp(2rem,5vw,3.5rem);margin:12px 0 4px;letter-spacing:-.04em}
+.eyebrow{color:#9ca9c4;text-transform:uppercase;font-size:.8rem;letter-spacing:.16em}.sub{color:#a9b5cb}
+.status{border-radius:50px;padding:9px 14px;background:#1a2941;color:#c9d6ec;font-size:.9rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:30px 0}
+.card,.candidate,.notice{background:#141f32;border:1px solid #2b3a55;border-radius:18px;padding:22px}
+.label{color:#a5b3cd;font-size:.86rem}.value{font-size:clamp(1.4rem,3vw,2rem);font-weight:750;margin-top:10px;font-variant-numeric:tabular-nums}
+.track{height:13px;background:#2c3b52;overflow:hidden;border-radius:20px;margin-top:18px}.fill{height:100%;background:#6bb3ff;width:0;transition:width .5s}
+section h2{margin-top:36px}.candidates{display:grid;gap:15px}.candidate{display:grid;gap:15px}
+.candidate-top{display:flex;justify-content:space-between;align-items:start;gap:14px}
+.name{font-weight:750;font-size:1.3rem}.number{color:#aab7ce;font-size:.9rem}.votes{text-align:right;font-variant-numeric:tabular-nums}.pct{font-size:1.5rem;font-weight:750}
+.candidate .fill{background:#66cfbe}.candidate:nth-child(even) .fill{background:#8ba8fa}
+.notice{margin-top:20px;color:#c2cee0;line-height:1.6}a{color:#8fc4ff}button{background:#d9e9ff;color:#0a1727;padding:11px 18px;border:0;border-radius:9px;font-weight:700;cursor:pointer}
+footer{color:#8d9cb5;font-size:.85rem;margin-top:24px;line-height:1.6}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.candidate-top{flex-direction:column}.votes{text-align:left}}
+</style></head>
+<body><main>
+<header><div><div class="eyebrow">Eleições gerais 2026 · 2º turno</div><h1>Presidente do Brasil</h1><div class="sub">Apuração nacional · Fonte: Tribunal Superior Eleitoral</div></div><div id="status" class="status" role="status">Conectando ao TSE…</div></header>
+<div class="grid">
+<div class="card"><div class="label">Seções totalizadas</div><div id="sections" class="value">—</div><div class="track"><div id="progress" class="fill"></div></div></div>
+<div class="card"><div class="label">Votos válidos</div><div id="valid" class="value">—</div></div>
+<div class="card"><div class="label">Última geração no TSE</div><div id="updated" class="value" style="font-size:1.3rem">—</div></div>
+</div>
+<section><h2>Resultado presidencial</h2><div id="candidates" class="candidates"><div class="notice">Aguardando dados oficiais da apuração.</div></div></section>
+<div class="notice"><strong id="message">Os números serão exibidos quando o TSE disponibilizar a totalização.</strong><div style="margin-top:12px"><button id="refresh">Atualizar agora</button></div></div>
+<footer>Consulta automática a cada 5 segundos, com cabeçalhos condicionais quando disponíveis. Não é uma projeção: os valores refletem apenas os arquivos públicos do TSE. <a id="source" target="_blank" rel="noopener">Ver JSON oficial</a> · <a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener">Documentação do TSE</a>.</footer>
+</main>
+<script>
+const ROOT='https://resultados.tse.jus.br/oficial';
+const FALLBACK='https://resultados.tse.jus.br/oficial/ele2026/6258/dados/br/br-c0001-e006258-u.json';
+const $=id=>document.getElementById(id),fmt=n=>Number(n||0).toLocaleString('pt-BR');
+let url=FALLBACK,etag='',modified='',inFlight=false,lastId='';
+$('source').href=url;
+function percent(x){if(x==null||x==='')return null;const n=Number(String(x).replace(',','.'));return Number.isFinite(n)?n:null}
+function candidatesFrom(d){const list=[];for(const cargo of d.carg||[])for(const agr of cargo.agr||[])for(const party of agr.par||[])for(const c of party.cand||[])list.push(c);return list.sort((a,b)=>Number(b.vap||0)-Number(a.vap||0))}
+function render(d){
+ const cands=candidatesFrom(d), sections=d.s||{}, valid=d.v||{}, pct=percent(sections.pst);
+ if(!Array.isArray(d.carg)||!d.carg.length)throw Error('Formato de resultados inesperado');
+ $('sections').textContent=pct===null?'—':pct.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';
+ $('progress').style.width=Math.min(100,Math.max(0,pct||0))+'%';
+ const numValid=valid.vvc??valid.vv??valid.tv??d.vvc;
+ $('valid').textContent=numValid==null?'—':fmt(numValid);
+ $('updated').textContent=[d.dg,d.hg].filter(Boolean).join(' às ')||'—';
+ $('candidates').replaceChildren();
+ if(!cands.length){$('candidates').textContent='Aguardando votos de candidatos no arquivo oficial.';return}
+ for(const c of cands){
+ const p=percent(c.pvap);const el=document.createElement('article');el.className='candidate';
+ const top=document.createElement('div');top.className='candidate-top';
+ const info=document.createElement('div');const name=document.createElement('div');name.className='name';name.textContent=c.nm||'Candidato';
+ const nr=document.createElement('div');nr.className='number';nr.textContent='Número '+(c.n||'—');
+ info.append(name,nr);
+ const votes=document.createElement('div');votes.className='votes';
+ const pv=document.createElement('div');pv.className='pct';pv.textContent=p==null?'—':p.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+ const total=document.createElement('div');total.className='number';total.textContent=fmt(c.vap)+' votos';
+ votes.append(pv,total);top.append(info,votes);
+ const track=document.createElement('div');track.className='track';const fill=document.createElement('div');fill.className='fill';fill.style.width=Math.max(0,Math.min(100,p||0))+'%';track.append(fill);el.append(top,track);$('candidates').append(el)
+ }
+ $('message').textContent='Resultados oficiais recebidos; sem projeções ou estimativas.';
+}
+async function resolveUrl(){
+ try{
+ const r=await fetch(ROOT+'/comum/config/ele-c.json',{cache:'no-store'});
+ if(!r.ok)throw Error('Configuração indisponível');
+ const d=await r.json();
+ const p=(d.pl||[]).find(p=>p.cd==='3221');
+ const e=p?.e?.find(e=>e.cd==='6258'||e.abr?.some(a=>a.cp?.some(c=>String(c.cd)==='1')));
+ if(!e)throw Error('Eleição presidencial de 2º turno ainda não consta na configuração do TSE');
+ url=ROOT+'/'+(p.c||'ele2026')+'/'+e.cd+'/dados/br/br-c0001-e'+String(e.cd).padStart(6,'0')+'-u.json';$('source').href=url;
+ }catch(err){$('message').textContent=err.message+'. Usando endereço oficial conhecido para o 2º turno.'}
+}
+async function poll(){
+ if(inFlight)return;inFlight=true;
+ try{
+ const headers={};if(etag)headers['If-None-Match']=etag;if(modified)headers['If-Modified-Since']=modified;
+ const r=await fetch(url,{headers,cache:'no-cache'});
+ if(r.status===304){$('status').textContent='Conectado · sem alterações';return}
+ if(!r.ok)throw Error('TSE retornou HTTP '+r.status);
+ const d=await r.json();render(d);
+ etag=r.headers.get('ETag')||'';modified=r.headers.get('Last-Modified')||'';
+ lastId=d.idg||lastId;
+ $('status').textContent='Conectado · atualização automática';
+ }catch(err){$('status').textContent='Aguardando TSE';$('message').textContent='Não foi possível atualizar: '+err.message+'. Os últimos dados válidos permanecem na tela.'}
+ finally{inFlight=false}
+}
+$('refresh').addEventListener('click',poll);
+(async()=>{await resolveUrl();await poll();setInterval(()=>{if(!document.hidden)poll()},5000)})();
+</script></body></html>
