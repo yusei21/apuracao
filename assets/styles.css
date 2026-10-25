@@ -104,3 +104,18 @@ button{font-weight:600}button:focus-visible,a:focus-visible{outline:2px solid va
 .exterior-footnote{display:flex;gap:10px;align-items:flex-start;border-top:1px solid #35353a;margin-top:23px;padding-top:16px;color:#a7a7ad}
 .exterior-footnote span{font-size:15px}.exterior-footnote p{font-size:12px;line-height:1.6}
 @media(max-width:620px){.exterior-section{padding:16px}.exterior-heading h2{font-size:21px}.exterior-metric{padding:14px}.exterior-metric strong{font-size:23px}.exterior-candidates{grid-template-columns:1fr}.exterior-candidate{padding:15px}.exterior-results-heading{align-items:start;flex-direction:column;gap:3px}}
+
+/* Alinhamento centralizado da seção Votos no exterior */
+.exterior-section{text-align:center}
+.exterior-heading{flex-direction:column;align-items:center;justify-content:center}
+.exterior-heading p{max-width:650px;margin:0 auto}
+.exterior-statusline{justify-content:center}
+.exterior-metric{align-items:center;text-align:center}
+.exterior-progress-track{width:100%}
+.exterior-results-heading{justify-content:center;align-items:center;flex-direction:column;text-align:center;gap:4px}
+.exterior-candidate{text-align:center}
+.exterior-candidate-top{flex-direction:column;align-items:center;justify-content:center}
+.exterior-candidate-top>div{text-align:center}
+.exterior-footnote{justify-content:center;text-align:center}
+.exterior-footnote p{max-width:720px}
+@media(max-width:620px){.exterior-results-heading{align-items:center}}
