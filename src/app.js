@@ -3,10 +3,17 @@ import {requestTse} from './tse.js';
 import {el,fillSelect,setState,clear,summary,candidatesList} from './ui.js';
 const state={candidates:[],url:'',etag:'',modified:'',controller:null,sequence:0};
 function selection(){return {turn:el('turno').value,cargo:el('cargo').value,uf:el('uf').value}}
+function updateProposalVisibility(){
+ const isPresident=selection().cargo==='1';
+ el('propostas').hidden=!isPresident;
+ document.querySelector('a[href="#propostas"]').hidden=!isPresident;
+ if(!isPresident&&location.hash==='#propostas')history.replaceState(null,'',location.pathname+location.search+'#resultados');
+}
 function updateOptions(){
  const selected=selection(),options=optionsFor(selected.turn,selected.cargo,selected.uf);
  fillSelect(el('cargo'),options.cargos,options.cargo);
  fillSelect(el('uf'),options.estados,options.uf);
+ updateProposalVisibility();
 }
 async function refresh(){
  const url=resultUrl(selection()),seq=++state.sequence;
