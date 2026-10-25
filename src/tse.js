@@ -10,7 +10,7 @@ export function candidates(data){
 }
 export function parseResults(data){
  if(!Array.isArray(data.carg))throw Error('Arquivo TSE sem a estrutura EA20 esperada');
- return {candidates:candidates(data),progress:numeral(data.s?.pst??data.pst),valid:data.v?.vvc??data.v?.vv??data.vvc,generated:[data.dg,data.hg].filter(Boolean).join(' · ')||'Não informado'};
+ return {candidates:candidates(data),progress:numeral(data.s?.pst??data.pst),valid:data.v?.vv??data.v?.vvc??data.vvc,blank:data.v?.vb??null,nullVotes:data.v?.tvn??data.v?.vn??null,blankPct:data.v?.pvb??null,nullPct:data.v?.ptvn??null,generated:[data.dg,data.hg].filter(Boolean).join(' · ')||'Não informado'};
 }
 export async function requestTse(url,{etag='',modified='',signal}={}){
  const headers={};if(etag)headers['If-None-Match']=etag;if(modified)headers['If-Modified-Since']=modified;
