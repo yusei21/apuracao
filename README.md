@@ -33,13 +33,9 @@ Eleições federais 6257 (1º turno), 6258 (2º turno); eleições estaduais 625
 5. Para audiência grande, prefira cache compartilhado de 60 segundos em vez de cada navegador requisitar diretamente ao TSE.
 6. Não foi feito teste de ponta a ponta contra todos os arquivos da CDN em produção. Valide conteúdo e URLs para cada cargo antes de tratar o site como serviço de alta confiabilidade.
 
-## Custo
-
-Arquivos oficiais do TSE são gratuitos. Github Pages costuma ser suficiente para um pequeno projeto pessoal público, sujeito à política e limites da plataforma. Uma implementação de proxy/cache, domínio próprio ou muitos acessos pode gerar custo, dependendo do provedor.
-
 ## Tecnologia
 
-HTML, CSS e JavaScript sem dependências ou etapas de compilação. Rust ou C não trazem vantagem mensurável na renderização e no polling de um site estático; o gargalo é a rede/CDN. Se houver backend pesado ou processamento de boletins, Rust pode ser avaliado.
+HTML, CSS e JavaScript sem dependências ou etapas de compilação. 
 
 ## Licença
 
