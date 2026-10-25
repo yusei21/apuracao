@@ -70,3 +70,11 @@ button{font-weight:600}button:focus-visible,a:focus-visible{outline:2px solid va
 .donation-email{font-size:16px;font-weight:650;overflow-wrap:anywhere;color:#eee;margin-top:4px}
 .donation-note{font-size:12px;margin-top:8px;color:#aaa}
 @media(max-width:600px){.donation-section{padding:16px}.donation-key button{width:100%}}
+
+/* Variação presidencial entre os dois turnos */
+.variation-section{margin-top:32px;padding:20px;border:1px solid #343437;border-radius:10px;background:#19191b}
+.variation-section h2{margin:7px 0 9px}.variation-section>p{font-size:13px;line-height:1.6}
+.variation-content{margin-top:18px}.variation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:15px}
+.variation-item{border:1px solid #38383c;background:#202023;border-radius:8px;padding:15px}
+.variation-values{margin:9px 0;font-size:13px;color:#bbb}.variation-delta{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+@media(max-width:620px){.variation-grid{grid-template-columns:1fr}.variation-section{padding:15px}}
