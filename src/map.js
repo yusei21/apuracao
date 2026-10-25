@@ -23,7 +23,7 @@ function selectState(uf){
 function draw(){
  if(!features.length)return;
  const all=[];for(const f of features){const visit=a=>{if(typeof a[0]==='number')all.push(a);else a.forEach(visit)};visit(f.geometry.coordinates)}
- const lo=Math.min(...all.map(x=>x[0])),hi=Math.max(...all.map(x=>x[0])),bottom=Math.min(...all.map(x=>x[1])),top=Math.max(...all.map(x=>x[1]));
+ let lo=Infinity,hi=-Infinity,bottom=Infinity,top=-Infinity;for(const p of all){if(p[0]<lo)lo=p[0];if(p[0]>hi)hi=p[0];if(p[1]<bottom)bottom=p[1];if(p[1]>top)top=p[1];}
  const W=750,H=720,pad=18,scale=Math.min((W-2*pad)/(hi-lo),(H-2*pad)/((top-bottom)*1.13));
  const project=p=>[(p[0]-lo)*scale+pad,(top-p[1])*scale*1.13+pad];
  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.replaceChildren();
