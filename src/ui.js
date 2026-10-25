@@ -6,12 +6,12 @@ export function fillSelect(node,items,selected){
 }
 export function setState(text,ok=false){el('status').textContent=text;el('dot').classList.toggle('ok',ok)}
 export function clear(){
- el('people').replaceChildren();el('sections').textContent='—';el('valid').textContent='—';el('time').textContent='—';el('sectionbar').style.width='0';el('count').textContent='—';
+ el('people').replaceChildren();el('sections').textContent='—';el('valid').textContent='—';el('blank').textContent='—';el('null-votes').textContent='—';el('blank-pct').textContent='—';el('null-pct').textContent='—';el('time').textContent='—';el('sectionbar').style.width='0';el('count').textContent='—';
 }
 export function summary(d){
  const p=d.progress;el('sections').textContent=p===null?'—':p.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';
  el('sectionbar').style.width=Math.max(0,Math.min(100,p||0))+'%';
- el('valid').textContent=d.valid==null?'—':format(d.valid);el('time').textContent=d.generated;
+ el('valid').textContent=d.valid==null?'—':format(d.valid);el('blank').textContent=d.blank==null?'—':format(d.blank);el('null-votes').textContent=d.nullVotes==null?'—':format(d.nullVotes);const pct=x=>x==null?'—':numeral(x)?.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';el('blank-pct').textContent=pct(d.blankPct);el('null-pct').textContent=pct(d.nullPct);el('time').textContent=d.generated;
 }
 export function candidatesList(items,term=''){
  const query=term.trim().toLowerCase(),shown=items.filter(c=>!query||String(c.nm||'').toLowerCase().includes(query)||String(c.n||'').includes(query));
