@@ -1,20 +1,46 @@
-# Apuração presidencial — Eleições 2026
+# Apuração 2026 — painel eleitoral
 
-Painel estático, responsivo, **apenas presidente da República (2º turno)**. Dados em JSON publicados pelo Tribunal Superior Eleitoral (TSE); não há pesquisas, projeções nem simulações.
+Site estático com interface clara inspirada na hierarquia, tipografia e espaçamento do Notion. Compatível com celulares, tablets e computadores.
 
-## Executar
-Abra `index.html` em um servidor HTTP estático (GitHub Pages, Netlify, Vercel ou `python3 -m http.server 8000`).
+## Funcionalidades
 
-No GitHub Pages: Settings > Pages > Deploy from a branch e selecione a branch em que este arquivo estiver publicado.
+- Atualização automática a cada **60 segundos** enquanto a aba permanece aberta; consulta ao retornar para a aba e botão de atualização manual.
+- Seleção do **1º ou 2º turno** de 2026.
+- Filtros por cargo e unidade da federação: presidente; governador; senador; deputado federal, estadual e distrital.
+- No 2º turno apenas presidente e governador, pois os demais cargos são definidos no 1º.
+- Lista de candidatos com busca, votos e percentuais do arquivo oficial EA20.
+- Comunicação HTTPS direta com a CDN pública do TSE; consulta condicional com ETag/Last-Modified quando disponíveis. Sem API key.
+- Nenhum dado fictício ou estimativa.
 
-## Dados
-O sistema tenta ler a configuração oficial `https://resultados.tse.jus.br/oficial/comum/config/ele-c.json`, seleciona o pleito 3221 e a eleição federal 6258, e busca o EA20 Brasil em `https://resultados.tse.jus.br/oficial/ele2026/6258/dados/br/br-c0001-e006258-u.json`.
+## Como publicar
 
-Atualização a cada 5 segundos enquanto a aba estiver visível, com ETag/Last-Modified quando houver. Os campos são extraídos do formato EA20 (`carg[].agr[].par[].cand[]`). Erros de rede não apagam a última apuração válida.
+Faça merge deste PR na branch `main`. GitHub Pages: Settings > Pages > Deploy from branch > `main` / `(root)`.
 
-**Importante:** a distribuição CDN do TSE pode não permitir requisições CORS feitas diretamente pelo navegador. Se aparecer erro de rede apesar de a URL oficial abrir normalmente, hospede um proxy/cache no mesmo domínio que o site e altere a constante `ROOT` em `index.html`. Não configure um proxy aberto; mantenha somente os caminhos do TSE necessários. O painel não consegue acessar dados ainda não liberados pelo TSE.
+Endereço após publicação: https://yusei21.github.io/apuracao/
 
-Documentação: https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados
+## Fonte dos dados
+
+https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados
+
+Eleições federais 6257 (1º turno), 6258 (2º turno); eleições estaduais 6259 (1º turno), 6260 (2º turno). O aplicativo monta caminhos EA20 conforme abrangência/cargo, por exemplo `https://resultados.tse.jus.br/oficial/ele2026/6257/dados/br/br-c0001-e006257-u.json`.
+
+**Limitações importantes**:
+
+1. Os arquivos de alguns cargos/abrangências podem não estar disponíveis; um HTTP 404 não significa zero votos.
+2. O navegador pode bloquear chamadas à CDN por **CORS**. Se ocorrer, será necessário adicionar backend/proxy com cache ou gerar snapshots periódicos no GitHub Actions. O GitHub Pages sozinho não serve como proxy.
+3. Os dados só são publicados no horário legal de divulgação do TSE. Consultar com mais frequência não antecipa a liberação.
+4. O painel usa arquivo de resultado por UF (presidente pode ser consultado nacionalmente). Não há seleção municipal e nem uma lista única nacional para todos os deputados, cuja totalização é estadual.
+5. Para audiência grande, prefira cache compartilhado de 60 segundos em vez de cada navegador requisitar diretamente ao TSE.
+6. Não foi feito teste de ponta a ponta contra todos os arquivos da CDN em produção. Valide conteúdo e URLs para cada cargo antes de tratar o site como serviço de alta confiabilidade.
+
+## Custo
+
+Arquivos oficiais do TSE são gratuitos. Github Pages costuma ser suficiente para um pequeno projeto pessoal público, sujeito à política e limites da plataforma. Uma implementação de proxy/cache, domínio próprio ou muitos acessos pode gerar custo, dependendo do provedor.
+
+## Tecnologia
+
+HTML, CSS e JavaScript sem dependências ou etapas de compilação. Rust ou C não trazem vantagem mensurável na renderização e no polling de um site estático; o gargalo é a rede/CDN. Se houver backend pesado ou processamento de boletins, Rust pode ser avaliado.
 
 ## Licença
-Consulte o arquivo LICENSE do repositório.
+
+Ver `LICENSE`.
